@@ -79,3 +79,13 @@ function displayGrid(grid) {
     }
   }
 }
+
+// Add this function to handle mouse clicks
+function mousePressed() {
+  let row = Math.floor(mouseY / cellSize);
+  let col = Math.floor(mouseX / cellSize);
+
+  if (row >= 0 && row < numRows && col >= 0 && col < numCols) {
+    grid[row][col] = 1 - grid[row][col];
+  }
+}
