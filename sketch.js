@@ -147,6 +147,10 @@ draw_character(letter_G, start_x + 45 + 9 * space_between_characters + extra_spa
 
 let grid;
 
+
+// Add a variable to track the elapsed time
+let elapsedTime = 0;
+
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight); // Updated to cover the entire browser window
   grid = JSON.parse(JSON.stringify(led_matrix)); // Use the led_matrix as the initial grid
@@ -157,7 +161,10 @@ function draw() {
   background(255);
   displayGrid(grid);
   grid = gameOfLifeUpdate(grid);
+  // Increment the elapsed time by updateInterval (50 milliseconds)
+  elapsedTime += updateInterval;
 }
+
 
 function gameOfLifeUpdate(grid) {
   let nextGrid = JSON.parse(JSON.stringify(grid));
@@ -178,21 +185,27 @@ function gameOfLifeUpdate(grid) {
     }
   }
 
-  // Draw the characters on the nextGrid to make sure the text is always visible
-  draw_character(letter_Y, start_x, start_y, nextGrid);
-  draw_character(letter_I, start_x + 5 + space_between_characters, start_y, nextGrid);
-  draw_character(letter_N, start_x + 10 + 2 * space_between_characters, start_y, nextGrid);
-  draw_character(letter_R, start_x + 15 + 3 * space_between_characters + extra_space, start_y, nextGrid);
-  draw_character(letter_E, start_x + 20 + 4 * space_between_characters + extra_space, start_y, nextGrid);
-  draw_character(letter_N, start_x + 25 + 5 * space_between_characters + extra_space, start_y, nextGrid);
-  draw_character(letter_L, start_x + 30 + 6 * space_between_characters + extra_space, start_y, nextGrid);
-  draw_character(letter_O, start_x + 35 + 7 * space_between_characters + extra_space, start_y, nextGrid);
-  draw_character(letter_N, start_x + 40 + 8 * space_between_characters + extra_space, start_y, nextGrid);
-  draw_character(letter_G, start_x + 45 + 9 * space_between_characters + extra_space, start_y, nextGrid);
+  // Draw the characters on the nextGrid only if the elapsed time is less than 10 seconds (10000 milliseconds)
+  if (elapsedTime < 10000) {
+    drawAllCharacters(start_y, nextGrid);
+  }
 
   return nextGrid;
 }
 
+// Create a function to draw all the characters on the matrix
+function drawAllCharacters(start_y, matrix) {
+  draw_character(letter_Y, start_x, start_y, matrix);
+  draw_character(letter_I, start_x + 5 + space_between_characters, start_y, matrix);
+  draw_character(letter_N, start_x + 10 + 2 * space_between_characters, start_y, matrix);
+  draw_character(letter_R, start_x + 15 + 3 * space_between_characters + extra_space, start_y, matrix);
+  draw_character(letter_E, start_x + 20 + 4 * space_between_characters + extra_space, start_y, matrix);
+  draw_character(letter_N, start_x + 25 + 5 * space_between_characters + extra_space, start_y, matrix);
+  draw_character(letter_L, start_x + 30 + 6 * space_between_characters + extra_space, start_y, matrix);
+  draw_character(letter_O, start_x + 35 + 7 * space_between_characters + extra_space, start_y, matrix);
+  draw_character(letter_N, start_x + 40 + 8 * space_between_characters + extra_space, start_y, matrix);
+  draw_character(letter_G, start_x + 45 + 9 * space_between_characters + extra_space, start_y, matrix);
+}
 
 
 function countNeighbors(grid, row, col, ...cellTypes) {
