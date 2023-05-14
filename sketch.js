@@ -106,7 +106,6 @@ const start_y = Math.floor((numRows * cellSize - 7 * cellSize) / 2 / cellSize); 
 
 const RED_CELL = 2;
 const PURPLE_CELL = 3;
-const BLUE_CELL = 4;
 
 function windowResized() {
   calculateGridSize();
@@ -167,7 +166,6 @@ function draw() {
   elapsedTime += updateInterval;
 }
 
-
 function gameOfLifeUpdate(grid) {
   let nextGrid = JSON.parse(JSON.stringify(grid));
   const rows = grid.length;
@@ -175,9 +173,9 @@ function gameOfLifeUpdate(grid) {
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      let numNeighbors = countNeighbors(grid, r, c, 1, RED_CELL, PURPLE_CELL, BLUE_CELL); // Include BLUE_CELL as a live cell
+      let numNeighbors = countNeighbors(grid, r, c, 1, RED_CELL, PURPLE_CELL); // Include PURPLE_CELL as a live cell
 
-      if ((grid[r][c] === 1 || grid[r][c] === RED_CELL || grid[r][c] === PURPLE_CELL || grid[r][c] === BLUE_CELL) && (numNeighbors < 2 || numNeighbors > 3)) {
+      if ((grid[r][c] === 1 || grid[r][c] === RED_CELL || grid[r][c] === PURPLE_CELL) && (numNeighbors < 2 || numNeighbors > 3)) {
         nextGrid[r][c] = 0;
       } else if (grid[r][c] === 0 && numNeighbors === 3) {
         // If there is at least one PURPLE_CELL neighbor, the new cell will be a PURPLE_CELL
@@ -186,23 +184,9 @@ function gameOfLifeUpdate(grid) {
         nextGrid[r][c] = RED_CELL;
       }
 
-      // After 15 seconds, randomly create new cells with different probabilities for black and purple cells
-      if (elapsedTime >= 15000) {
-        if (Math.random() < 0.0002) {
-          nextGrid[r][c] = PURPLE_CELL;
-        } else if (Math.random() < 0.0002) {
-          nextGrid[r][c] = 1;
-        }
-      }
-
-      // If a purple cell has a black neighbor, there's a 50% chance it will create a new blue cell
-      if (grid[r][c] === PURPLE_CELL && countNeighbors(grid, r, c, 1) > 0 && Math.random() < 0.8) {
-        nextGrid[r][c] = BLUE_CELL;
-      }
-
-      // If a purple cell touches the text, create a new black cell
-      if (grid[r][c] === PURPLE_CELL && countTextNeighbors(grid, r, c) > 0) {
-        nextGrid[r][c] = 1;
+      // Add the condition to create new purple cells after 15 seconds and stop after 17 seconds
+      if (elapsedTime >= 15000 && elapsedTime < 17000 && grid[r][c] === 0 && countTextNeighbors(grid, r, c) > 0) {
+        nextGrid[r][c] = Math.random() < 0.1 ? PURPLE_CELL : nextGrid[r][c];
       }
     }
   }
@@ -214,6 +198,7 @@ function gameOfLifeUpdate(grid) {
     return nextGrid;
   }
 }
+
 
 
 
@@ -263,9 +248,7 @@ function displayGrid(grid) {
       } else if (grid[r][c] === RED_CELL) {
         fill(255, 0, 0);
       } else if (grid[r][c] === PURPLE_CELL) {
-        fill(128, 0, 128);
-      } else if (grid[r][c] === BLUE_CELL) {
-        fill(0, 0, 255); // Set the blue cell color
+        fill(128, 0, 128); // Set the purple cell color
       } else if (grid[r][c] === 1) {
         fill(0);
       } else {
