@@ -120,7 +120,7 @@ draw_character(letter_G, start_x + 45 + 9 * space_between_characters + extra_spa
 const numRows = 100;
 const numCols = 100;
 const cellSize = 10;
-const updateInterval = 100;
+const updateInterval = 50;
 
 let grid;
 
@@ -144,27 +144,28 @@ function gameOfLifeUpdate(grid) {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       let numNeighbors = countNeighbors(grid, r, c, 1, RED_CELL);
-      let textNeighbors = countTextNeighbors(grid, r, c);
 
       if ((grid[r][c] === 1 || grid[r][c] === RED_CELL) && (numNeighbors < 2 || numNeighbors > 3)) {
         nextGrid[r][c] = 0;
       } else if (grid[r][c] === 0 && numNeighbors === 3) {
         nextGrid[r][c] = 1;
-      } else if (grid[r][c] === 0 && textNeighbors >= 1 && Math.random() < 0.1) {
-        // A 10% chance to turn the cell red if it's adjacent to the text
+      } else if (grid[r][c] === 0 && Math.random() < 0.005) { // Decreased the probability for red cells
         nextGrid[r][c] = RED_CELL;
       }
     }
   }
 
-  // Merge the text grid and the nextGrid
-  for (let r = 0; r < numRows; r++) {
-    for (let c = 0; c < numCols; c++) {
-      if (isTextCell(r, c)) {
-        nextGrid[r][c] = led_matrix[r][c];
-      }
-    }
-  }
+  // Draw the characters on the nextGrid to make sure the text is always visible
+  draw_character(letter_Y, start_x, start_y, nextGrid);
+  draw_character(letter_I, start_x + 5 + space_between_characters, start_y, nextGrid);
+  draw_character(letter_N, start_x + 10 + 2 * space_between_characters, start_y, nextGrid);
+  draw_character(letter_R, start_x + 15 + 3 * space_between_characters + extra_space, start_y, nextGrid);
+  draw_character(letter_E, start_x + 20 + 4 * space_between_characters + extra_space, start_y, nextGrid);
+  draw_character(letter_N, start_x + 25 + 5 * space_between_characters + extra_space, start_y, nextGrid);
+  draw_character(letter_L, start_x + 30 + 6 * space_between_characters + extra_space, start_y, nextGrid);
+  draw_character(letter_O, start_x + 35 + 7 * space_between_characters + extra_space, start_y, nextGrid);
+  draw_character(letter_N, start_x + 40 + 8 * space_between_characters + extra_space, start_y, nextGrid);
+  draw_character(letter_G, start_x + 45 + 9 * space_between_characters + extra_space, start_y, nextGrid);
 
   return nextGrid;
 }
