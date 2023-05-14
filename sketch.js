@@ -105,6 +105,8 @@ const start_x = Math.floor((numCols * cellSize - text_width * cellSize) / 2 / ce
 const start_y = Math.floor((numRows * cellSize - 7 * cellSize) / 2 / cellSize); // Center vertically, 7 is the height of characters
 
 const RED_CELL = 2;
+const PURPLE_CELL = 3;
+const BLUE_CELL = 4;
 
 function windowResized() {
   calculateGridSize();
@@ -173,25 +175,47 @@ function gameOfLifeUpdate(grid) {
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      let numNeighbors = countNeighbors(grid, r, c, 1, RED_CELL);
+      let numNeighbors = countNeighbors(grid, r, c, 1, RED_CELL, PURPLE_CELL, BLUE_CELL); // Include BLUE_CELL as a live cell
 
-      if ((grid[r][c] === 1 || grid[r][c] === RED_CELL) && (numNeighbors < 2 || numNeighbors > 3)) {
+      if ((grid[r][c] === 1 || grid[r][c] === RED_CELL || grid[r][c] === PURPLE_CELL || grid[r][c] === BLUE_CELL) && (numNeighbors < 2 || numNeighbors > 3)) {
         nextGrid[r][c] = 0;
       } else if (grid[r][c] === 0 && numNeighbors === 3) {
-        nextGrid[r][c] = 1;
-      } else if (grid[r][c] === 0 && Math.random() < 0.0005) { // Decreased the probability for red cells
+        // If there is at least one PURPLE_CELL neighbor, the new cell will be a PURPLE_CELL
+        nextGrid[r][c] = countNeighbors(grid, r, c, PURPLE_CELL) > 0 ? PURPLE_CELL : 1;
+      } else if (grid[r][c] === 0 && Math.random() < 0.0005) {
         nextGrid[r][c] = RED_CELL;
+      }
+
+      // After 15 seconds, randomly create new cells with different probabilities for black and purple cells
+      if (elapsedTime >= 15000) {
+        if (Math.random() < 0.0002) {
+          nextGrid[r][c] = PURPLE_CELL;
+        } else if (Math.random() < 0.0002) {
+          nextGrid[r][c] = 1;
+        }
+      }
+
+      // If a purple cell has a black neighbor, there's a 50% chance it will create a new blue cell
+      if (grid[r][c] === PURPLE_CELL && countNeighbors(grid, r, c, 1) > 0 && Math.random() < 0.8) {
+        nextGrid[r][c] = BLUE_CELL;
+      }
+
+      // If a purple cell touches the text, create a new black cell
+      if (grid[r][c] === PURPLE_CELL && countTextNeighbors(grid, r, c) > 0) {
+        nextGrid[r][c] = 1;
       }
     }
   }
 
-  // Draw the characters on the nextGrid only if the elapsed time is less than 10 seconds (10000 milliseconds)
-  if (elapsedTime < 10000) {
+  if (elapsedTime >= 15000) {
+    return nextGrid;
+  } else {
     drawAllCharacters(start_y, nextGrid);
+    return nextGrid;
   }
-
-  return nextGrid;
 }
+
+
 
 // Create a function to draw all the characters on the matrix
 function drawAllCharacters(start_y, matrix) {
@@ -234,11 +258,14 @@ function displayGrid(grid) {
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      // Check if the current cell is part of the text
       if (isTextCell(r, c)) {
-        fill(55, 150, 50); // Set the text color to green
+        fill(55, 150, 50);
       } else if (grid[r][c] === RED_CELL) {
-        fill(255, 0, 0); // Set the red cell color
+        fill(255, 0, 0);
+      } else if (grid[r][c] === PURPLE_CELL) {
+        fill(128, 0, 128);
+      } else if (grid[r][c] === BLUE_CELL) {
+        fill(0, 0, 255); // Set the blue cell color
       } else if (grid[r][c] === 1) {
         fill(0);
       } else {
@@ -248,6 +275,7 @@ function displayGrid(grid) {
     }
   }
 }
+
 
 
 function isTextCell(row, col) {
