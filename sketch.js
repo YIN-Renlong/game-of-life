@@ -79,10 +79,19 @@ const letter_G = [
   "01110"
 ];
 
-// Define the spacing between characters and the starting position on the matrix
+// Define the spacing between characters
 const space_between_characters = 2;
-const start_x = 2;
-const start_y = 20;
+
+// Calculate the total width of the text
+const text_width =
+  10 * 5 + // 10 characters, each 5 pixels wide
+  9 * space_between_characters + // 9 spaces between characters, each 2 pixels wide
+  4; // extra space between 'N' and 'R'
+
+// Calculate the starting positions on the matrix
+const start_x = Math.floor((100 - text_width) / 2);
+const start_y = Math.floor((100 - 7) / 2); // Center vertically, 7 is the height of characters
+
 const RED_CELL = 2;
 
 // Create a function to draw a character on the matrix, given the character's bitmap, starting position, and LED matrix
