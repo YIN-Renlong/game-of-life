@@ -79,6 +79,11 @@ const letter_G = [
   "01110"
 ];
 
+const cellSize = 10;
+const numRows = Math.floor(window.innerHeight / cellSize);
+const numCols = Math.floor(window.innerWidth / cellSize);
+const updateInterval = 50;
+
 // Define the spacing between characters
 const space_between_characters = 2;
 
@@ -89,8 +94,8 @@ const text_width =
   4; // extra space between 'N' and 'R'
 
 // Calculate the starting positions on the matrix
-const start_x = Math.floor((100 - text_width) / 2);
-const start_y = Math.floor((100 - 7) / 2); // Center vertically, 7 is the height of characters
+const start_x = Math.floor((numCols * cellSize - text_width * cellSize) / 2 / cellSize);
+const start_y = Math.floor((numRows * cellSize - 7 * cellSize) / 2 / cellSize); // Center vertically, 7 is the height of characters
 
 const RED_CELL = 2;
 
@@ -126,10 +131,6 @@ draw_character(letter_O, start_x + 35 + 7 * space_between_characters + extra_spa
 draw_character(letter_N, start_x + 40 + 8 * space_between_characters + extra_space, start_y, led_matrix);
 draw_character(letter_G, start_x + 45 + 9 * space_between_characters + extra_space, start_y, led_matrix);
 
-const numRows = 100;
-const numCols = 100;
-const cellSize = 10;
-const updateInterval = 50;
 
 let grid;
 
