@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2023 YIN RENLONG
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 // Define the characters as 5x7 bitmaps
 const letter_Y = [
   "10001",
@@ -112,6 +128,12 @@ function windowResized() {
   resizeCanvas(window.innerWidth, window.innerHeight);
 }
 
+
+function isCursorOverCell(row, col) {
+  const x = col * cellSize;
+  const y = row * cellSize;
+  return mouseX >= x && mouseX <= x + cellSize && mouseY >= y && mouseY <= y + cellSize;
+}
 
 // Create a function to draw a character on the matrix, given the character's bitmap, starting position, and LED matrix
 function draw_character(bitmap, start_x, start_y, matrix) {
@@ -254,7 +276,37 @@ function displayGrid(grid) {
       } else {
         fill(255);
       }
+
+      // If the cursor is over the cell, change the color to indicate interaction
+      if (isCursorOverCell(r, c)) {
+        fill(65, 65, 65);
+      }
+
       rect(c * cellSize, r * cellSize, cellSize, cellSize);
+    }
+  }
+}
+
+function mouseClicked() {
+  const row = Math.floor(mouseY / cellSize);
+  const col = Math.floor(mouseX / cellSize);
+
+  // If the cell is not part of the text, add 5 new black cells in the form of a cross
+  if (!isTextCell(row, col)) {
+    const cross = [
+      [0, 1, 0],
+      [1, 1, 1],
+      [0, 1, 0],
+    ];
+
+    for (let dr = -1; dr <= 1; dr++) {
+      for (let dc = -1; dc <= 1; dc++) {
+        const r = (row + dr + grid.length) % grid.length;
+        const c = (col + dc + grid[0].length) % grid[0].length;
+        if (cross[dr + 1][dc + 1] === 1) {
+          grid[r][c] = 1;
+        }
+      }
     }
   }
 }
