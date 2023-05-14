@@ -80,8 +80,15 @@ const letter_G = [
 ];
 
 const cellSize = 10;
-const numRows = Math.floor(window.innerHeight / cellSize);
-const numCols = Math.floor(window.innerWidth / cellSize);
+let numRows, numCols;
+
+function calculateGridSize() {
+  numRows = Math.floor(window.innerHeight / cellSize);
+  numCols = Math.floor(window.innerWidth / cellSize);
+}
+
+calculateGridSize(); // Call this function initially to set numRows and numCols
+
 const updateInterval = 50;
 
 // Define the spacing between characters
@@ -99,6 +106,12 @@ const start_y = Math.floor((numRows * cellSize - 7 * cellSize) / 2 / cellSize); 
 
 const RED_CELL = 2;
 
+function windowResized() {
+  calculateGridSize();
+  resizeCanvas(window.innerWidth, window.innerHeight);
+}
+
+
 // Create a function to draw a character on the matrix, given the character's bitmap, starting position, and LED matrix
 function draw_character(bitmap, start_x, start_y, matrix) {
   for (let y = 0; y < bitmap.length; y++) {
@@ -112,7 +125,7 @@ function draw_character(bitmap, start_x, start_y, matrix) {
 }
 
 // Initialize an empty 100x100 matrix
-const led_matrix = Array.from({ length: 100 }, () => Array(100).fill(0));
+const led_matrix = Array.from({ length: numRows }, () => Array(numCols).fill(0));
 
 // Draw the characters on the matrix
 draw_character(letter_Y, start_x, start_y, led_matrix);
