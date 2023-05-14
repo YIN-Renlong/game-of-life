@@ -149,7 +149,7 @@ function gameOfLifeUpdate(grid) {
         nextGrid[r][c] = 0;
       } else if (grid[r][c] === 0 && numNeighbors === 3) {
         nextGrid[r][c] = 1;
-      } else if (grid[r][c] === 0 && Math.random() < 0.005) { // Decreased the probability for red cells
+      } else if (grid[r][c] === 0 && Math.random() < 0.0005) { // Decreased the probability for red cells
         nextGrid[r][c] = RED_CELL;
       }
     }
