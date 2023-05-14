@@ -135,7 +135,7 @@ draw_character(letter_G, start_x + 45 + 9 * space_between_characters + extra_spa
 let grid;
 
 function setup() {
-  createCanvas(numCols * cellSize, numRows * cellSize);
+  createCanvas(window.innerWidth, window.innerHeight); // Updated to cover the entire browser window
   grid = JSON.parse(JSON.stringify(led_matrix)); // Use the led_matrix as the initial grid
   frameRate(1000 / updateInterval);
 }
