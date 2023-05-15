@@ -188,6 +188,9 @@ function draw() {
   elapsedTime += updateInterval;
 }
 
+// Initialize an empty 100x100 matrix for the "touched" cells
+const touched = Array.from({ length: numRows }, () => Array(numCols).fill(false));
+
 function gameOfLifeUpdate(grid) {
   let nextGrid = JSON.parse(JSON.stringify(grid));
   const rows = grid.length;
@@ -200,10 +203,14 @@ function gameOfLifeUpdate(grid) {
       if ((grid[r][c] === 1 || grid[r][c] === RED_CELL || grid[r][c] === PURPLE_CELL) && (numNeighbors < 2 || numNeighbors > 3)) {
         nextGrid[r][c] = 0;
       } else if (grid[r][c] === 0 && numNeighbors === 3) {
-        // If there is at least one PURPLE_CELL neighbor, the new cell will be a PURPLE_CELL
         nextGrid[r][c] = countNeighbors(grid, r, c, PURPLE_CELL) > 0 ? PURPLE_CELL : 1;
       } else if (grid[r][c] === 0 && Math.random() < 0.0005) {
         nextGrid[r][c] = RED_CELL;
+      }
+
+      // If the current cell is a text cell and has a neighbor, mark it as touched
+      if (isTextCell(r, c) && countNeighbors(grid, r, c, 1, RED_CELL, PURPLE_CELL) > 0) {
+        touched[r][c] = true;
       }
 
       // Add the condition to create new purple cells after 15 seconds and stop after 17 seconds
@@ -259,33 +266,53 @@ function countNeighbors(grid, row, col, ...cellTypes) {
 }
 
 
+// Update the displayGrid function
 function displayGrid(grid) {
   const rows = grid.length;
   const cols = grid[0].length;
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
+      let fill_color = 255; // Default to white
       if (isTextCell(r, c)) {
-        fill(55, 150, 50);
+        // Get the number of purple neighbors this cell has
+        let purple_neighbors = countNeighbors(grid, r, c, PURPLE_CELL);
+
+        // If there are 1 or 2 purple neighbors, color the cell yellow
+        if (purple_neighbors >= 1 && purple_neighbors <= 2) {
+          fill_color = color(255, 255, 0);
+        }
+        // If there are 3 purple neighbors, color the cell orange
+        else if (purple_neighbors == 3) {
+          fill_color = color(255, 165, 0);
+        }
+        // If there are 4 or more purple neighbors, color the cell red
+        else if (purple_neighbors >= 4) {
+          fill_color = color(255, 0, 0);
+        }
+        // If there are no purple neighbors, keep the cell green
+        else {
+          fill_color = color(55, 150, 50);
+        }
       } else if (grid[r][c] === RED_CELL) {
-        fill(255, 0, 0);
+        fill_color = color(255, 0, 0);
       } else if (grid[r][c] === PURPLE_CELL) {
-        fill(128, 0, 128); // Set the purple cell color
+        fill_color = color(128, 0, 128); // Set the purple cell color
       } else if (grid[r][c] === 1) {
-        fill(0);
-      } else {
-        fill(255);
+        fill_color = color(0);
       }
 
       // If the cursor is over the cell, change the color to indicate interaction
       if (isCursorOverCell(r, c)) {
-        fill(65, 65, 65);
+        fill_color = color(65, 65, 65);
       }
 
+      fill(fill_color);
       rect(c * cellSize, r * cellSize, cellSize, cellSize);
     }
   }
 }
+
 
 function mouseClicked() {
   const row = Math.floor(mouseY / cellSize);
