@@ -4,6 +4,9 @@
 
 This is a simple script that creates a Conway's Game of Life-based animation of text on a grid of LED lights. The main text is initially displayed on the LED grid, and after 15 seconds, it starts to disintegrate into a Game of Life pattern. The animation stops after 17 seconds.
 
+![alt text](https://raw.githubusercontent.com/YIN-Renlong/game-of-life/7c436984248d0d4841b746505317f8401495f13b/Schermata%202023-05.png?raw=true)
+
+
 ## How to Use
 
 Simply open the script in a p5.js editor or embed it in an HTML file with the p5.js library included. The animation will automatically start when the page is loaded.
