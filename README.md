@@ -6,7 +6,7 @@ This is a simple script that creates a Conway's Game of Life-based animation of 
 
 Online demo: https://yin-renlong.github.io/game-of-life/
 
-![alt text](https://raw.githubusercontent.com/YIN-Renlong/game-of-life/7c436984248d0d4841b746505317f8401495f13b/Schermata%202023-05.png?raw=true)
+![alt text](https://github.com/YIN-Renlong/game-of-life/blob/main/Schermata%202023-05.gif?raw=true)
 
 
 ## How to Use
