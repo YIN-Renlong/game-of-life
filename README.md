@@ -4,6 +4,8 @@
 
 This is a simple script that creates a Conway's Game of Life-based animation of text on a grid of LED lights. The main text is initially displayed on the LED grid, and after 15 seconds, it starts to disintegrate into a Game of Life pattern. The animation stops after 17 seconds.
 
+Online demo: https://yin-renlong.github.io/game-of-life/
+
 ![alt text](https://raw.githubusercontent.com/YIN-Renlong/game-of-life/7c436984248d0d4841b746505317f8401495f13b/Schermata%202023-05.png?raw=true)
 
 
